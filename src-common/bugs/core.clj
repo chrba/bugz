@@ -8,14 +8,26 @@
   [bug]
   (let [me (assoc bug :x (- (get-in bug [:pos 0]) 25))
         me (assoc me :y (- (get-in bug [:pos 1]) 25))
-        me (assoc me :angle (- (:orientation bug) 90))]
+        me (assoc me :angle (- (:orientation bug) 90))
+        me (assoc me :me? true)]
     me))
+
+(defn update-screen!
+  [screen entities]
+  (doseq [{:keys [x y me?]} entities]
+    (when me?
+      (position! screen x (/ 20 2))
+      )
+    )
+  entities)
 
 
 (defscreen main-screen
   :on-show
   (fn [screen entities]
-    (update! screen :renderer (stage))
+       (comment (->> (orthogonal-tiled-map "level1.tmx" (/ 1 16))
+             (update! screen :camera (orthographic) :renderer)))
+        (update! screen :renderer (stage))
         (let [sheet (texture "bug-sprite.png")
               tiles (texture! sheet :split 50 45)
               player-imgs (for [col [0 1 2 3]]
@@ -27,6 +39,12 @@
     (let [me (first entities)
           pos [(:input-x screen) (- (height screen) (:input-y screen))]]
       (b/set-destination me pos)))
+
+
+
+  :on-resize
+  (fn [{:keys [width height] :as screen} entities]
+    (comment (height! screen 20)))
 
   :on-render
   (fn [screen entities]
