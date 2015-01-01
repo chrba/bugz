@@ -11,11 +11,6 @@
         me (assoc me :angle (- (:orientation bug) 90))]
     me))
 
-(defn animate
-  [screen {:keys [walk wait action] :as entity}]
-  (cond
-   (b/waiting? entity) (merge entity wait)
-   :else (merge entity (animation->texture screen walk))))
 
 (defscreen main-screen
   :on-show
@@ -24,9 +19,8 @@
         (let [sheet (texture "bug-sprite.png")
               tiles (texture! sheet :split 50 45)
               player-imgs (for [col [0 1 2 3]]
-                            (texture (aget tiles 0 col)))
-              me (b/create-bug [10 50] 0)]
-          (merge (apply gui/with-animation player-imgs) me)))
+                            (texture (aget tiles 0 col)))]                   
+          (gui/create-entity player-imgs [20 20] 0)))
   
   :on-touch-down
   (fn [screen entities]
@@ -39,7 +33,7 @@
     (clear!)
     (render! screen (->> entities
                          (map cljify)
-                         (map #(animate screen %))
+                         (map #(gui/animate screen %))
                          (map b/walk-to-destination)))))
 
 (defgame bugs
