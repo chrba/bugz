@@ -35,7 +35,7 @@
   [{:keys [delta-time] :as dt} {:keys [to-destination] :as bug}]
   (move dt bug to-destination))
 
-(defn move-forward  
+(defn- move-forward  
   "moves the bug on step in the direction of the orientation"
   [{:keys [delta-time]} {:keys [pos orientation speed] :as bug}]
   (let [[x y] pos
@@ -45,16 +45,14 @@
             [(+ x  x-change)
              (+ y  y-change)])))
 
-(defn turn
+(defn- turn
   "turns the bug in the given direction. Direction should be :left or :right"
   [{:keys [orientation] :as bug} direction]
   (let [change {:left #(- % turn-speed) :right #(+ % turn-speed)}]
     (assoc bug :orientation ((get change direction identity) orientation))))
 
 
-
-
-(defn turn-to-target
+(defn- turn-to-target
   [{:keys [orientation] :as bug} to-orientation]
   (let [dist (m/angle-dist orientation to-orientation)]
     (cond
@@ -65,7 +63,7 @@
 ;;TODO: when the target is almost reached
 ;;the bug should rotate until it reaches its final orientation
 ;;without moving forward
-(defn move
+(defn- move
   [{:keys [delta-time] :as dt} {:keys [pos orientation] :as bug} to-pos]
   (let [
         vec-to-orientation (map - to-pos pos)
