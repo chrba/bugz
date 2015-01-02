@@ -1,12 +1,9 @@
 (ns bugs.bug
   (:require [bugs.math :as m]))
 
-(def bug-speed 6)
 (def turn-speed 25)
 
-(declare move)
-(declare waiting)
-(declare moving)
+(declare move waiting moving)
 
 (defn create-bug
   [pos orientation]
