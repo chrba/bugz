@@ -11,11 +11,12 @@
 (defn create-bug
   [pos orientation]
   {:max-speed 4
-   :speed 80
+   :speed 250
    :type :bug
    :pos pos
    :orientation orientation
    :action :moving
+   :waiting? true
    :food 0
    :home [26 26]
    :to-destination pos
@@ -81,21 +82,14 @@
       (moving (move-forward dt turned-bug)))))
 
 
-(defn waiting
+(defn- waiting
   [bug]
-  (assoc bug :action :waiting))
+  (assoc bug :waiting? true))
 
-(defn waiting?
-  [bug]
-  (= (:action bug) :waiting))
 
-(defn moving
+(defn- moving
   [bug]
-  (assoc bug :action :moving))
-
-(defn moving?
-  [bug]
-  (= (bug :action) :moving))
+  (assoc bug :waiting? false))
 
 
 (defn carries-food?
@@ -103,13 +97,6 @@
   (> food 0))
 
 
-;; moves the bug and updates state info
-(comment (defn move-to-pos
-   [{:keys [pos orientation] :as bug}  {to-pos :pos}]
-   (cond
-    (= pos to-pos) (waiting bug)
-    :else (moving (move bug to-pos))
-    )))
 
 (comment (defn go-home
    [bug]
