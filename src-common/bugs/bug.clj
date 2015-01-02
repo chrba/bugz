@@ -1,13 +1,15 @@
 (ns bugs.bug
   (:require [bugs.math :as m]))
 
-(def turn-speed 25)
+(def turn-velocity 40)
+(def near-target 0.3)
+(def velocity 18)
 
 (declare move waiting moving)
 
 (defn create-bug
   [pos orientation]
-  {:speed 250
+  {:speed velocity
    :pos pos
    :orientation orientation
    :waiting? true
@@ -45,7 +47,7 @@
 (defn- turn
   "turns the bug in the given direction. Direction should be :left or :right"
   [{:keys [orientation] :as bug} direction]
-  (let [change {:left #(- % turn-speed) :right #(+ % turn-speed)}]
+  (let [change {:left #(- % turn-velocity) :right #(+ % turn-velocity)}]
     (assoc bug :orientation ((get change direction identity) orientation))))
 
 
@@ -53,7 +55,7 @@
   [{:keys [orientation] :as bug} to-orientation]
   (let [dist (m/angle-dist orientation to-orientation)]
     (cond
-     (>= turn-speed (Math/abs dist)) (assoc bug :orientation to-orientation)
+     (>= turn-velocity (Math/abs dist)) (assoc bug :orientation to-orientation)
      (< dist 0) (turn bug :left)
      :else (turn bug :right))))
 
@@ -66,7 +68,7 @@
         vec-to-orientation (map - to-pos pos)
         to-orientation (m/angle [1 0] vec-to-orientation)
         turned-bug (turn-to-target bug to-orientation)
-        near-target? (< (m/dist to-pos pos) 3)
+        near-target? (< (m/dist to-pos pos) near-target)
     ;;    rotate-only? (and (not= orientation to-orientation) (< (m/dist to-pos pos) 5))
         ]
     (if near-target?

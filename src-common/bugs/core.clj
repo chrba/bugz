@@ -7,8 +7,8 @@
 (defn update-entity
   [bug]
   (assoc bug
-    :x (- (get-in bug [:pos 0]) 25)
-    :y (- (get-in bug [:pos 1]) 25)
+    :x (get-in bug [:pos 0])
+    :y (get-in bug [:pos 1])
     :angle (- (:orientation bug) 90)
     :me? true))
 
@@ -16,7 +16,7 @@
   [screen entities]
   (doseq [{:keys [x y me?]} entities]
     (when me?
-      (position! screen x (/ 20 2))
+      (position! screen 20 (/ 20 2))
       )
     )
   entities)
@@ -25,26 +25,26 @@
 (defscreen main-screen
   :on-show
   (fn [screen entities]
-       (comment (->> (orthogonal-tiled-map "level1.tmx" (/ 1 16))
-             (update! screen :camera (orthographic) :renderer)))
-        (update! screen :renderer (stage))
+       (->> (orthogonal-tiled-map "level1.tmx" (/ 1 16))
+            (update! screen :camera (orthographic) :renderer))
+        (comment (update! screen :renderer (stage)))
         (let [sheet (texture "bug-sprite.png")
               tiles (texture! sheet :split 50 45)
               player-imgs (for [col [0 1 2 3]]
-                            (texture (aget tiles 0 col)))]                   
-          (gui/create-entity player-imgs [20 20] 0)))
+                            (assoc (texture (aget tiles 0 col))
+                              :width 2 :height 2))]                   
+          (gui/create-entity player-imgs [5 0] 0)))
   
   :on-touch-down
   (fn [screen entities]
     (let [me (first entities)
-          pos [(:input-x screen) (- (height screen) (:input-y screen))]]
+          coord (input->screen screen (:input-x screen) (:input-y screen))
+          pos [(:x coord) (:y coord)]]
       (b/set-destination me pos)))
-
-
 
   :on-resize
   (fn [{:keys [width height] :as screen} entities]
-    (comment (height! screen 20)))
+    (height! screen 20))
 
   :on-render
   (fn [screen entities]
@@ -55,7 +55,8 @@
                      (update-entity)
                      (gui/animate screen)
                      (b/walk-to-destination screen))))
-         (render! screen)))
+         (render! screen)
+         (update-screen! screen)))
 
 
 
