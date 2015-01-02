@@ -25,14 +25,14 @@
 (defscreen main-screen
   :on-show
   (fn [screen entities]
-       (->> (orthogonal-tiled-map "level1.tmx" (/ 1 16))
+       (->> (orthogonal-tiled-map "desert.tmx" (/ 1 32))
             (update! screen :camera (orthographic) :renderer))
         (comment (update! screen :renderer (stage)))
         (let [sheet (texture "bug-sprite.png")
               tiles (texture! sheet :split 50 45)
               player-imgs (for [col [0 1 2 3]]
                             (assoc (texture (aget tiles 0 col))
-                              :width 2 :height 2))]                   
+                              :width 1 :height 1))]                   
           (gui/create-entity player-imgs [5 0] 0)))
   
   :on-touch-down
