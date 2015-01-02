@@ -4,13 +4,13 @@
             [bugs.gui :as gui]
             [bugs.bug :as b]))
 
-(defn cljify
+(defn update-entity
   [bug]
-  (let [me (assoc bug :x (- (get-in bug [:pos 0]) 25))
-        me (assoc me :y (- (get-in bug [:pos 1]) 25))
-        me (assoc me :angle (- (:orientation bug) 90))
-        me (assoc me :me? true)]
-    me))
+  (assoc bug
+    :x (- (get-in bug [:pos 0]) 25)
+    :y (- (get-in bug [:pos 1]) 25)
+    :angle (- (:orientation bug) 90)
+    :me? true))
 
 (defn update-screen!
   [screen entities]
@@ -49,10 +49,17 @@
   :on-render
   (fn [screen entities]
     (clear!)
-    (render! screen (->> entities
-                         (map cljify)
-                         (map #(gui/animate screen %))
-                         (map b/walk-to-destination)))))
+    (->> entities
+         (map (fn [entity]
+                (->> entity
+                     (update-entity)
+                     (gui/animate screen)
+                     (b/walk-to-destination))))
+         (render! screen)))
+
+
+
+)
 
 (defgame bugs
   :on-create
