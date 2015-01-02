@@ -10,12 +10,9 @@
 
 (defn create-bug
   [pos orientation]
-  {:max-speed 4
-   :speed 250
-   :type :bug
+  {:speed 250
    :pos pos
    :orientation orientation
-   :action :moving
    :waiting? true
    :food 0
    :home [26 26]
