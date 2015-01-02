@@ -54,7 +54,7 @@
                 (->> entity
                      (update-entity)
                      (gui/animate screen)
-                     (b/walk-to-destination))))
+                     (b/walk-to-destination screen))))
          (render! screen)))
 
 

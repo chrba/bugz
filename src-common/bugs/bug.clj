@@ -11,7 +11,7 @@
 (defn create-bug
   [pos orientation]
   {:max-speed 4
-   :speed 2
+   :speed 80
    :type :bug
    :pos pos
    :orientation orientation
@@ -34,18 +34,18 @@
   (assoc bug :to-destination pos))
 
 (defn walk-to-destination
-  [{:keys [to-destination] :as bug}]
-  (move bug to-destination))
+  [{:keys [delta-time] :as dt} {:keys [to-destination] :as bug}]
+  (move dt bug to-destination))
 
 (defn move-forward  
   "moves the bug on step in the direction of the orientation"
-  [{:keys [pos orientation speed] :as bug}]
-  (let [[x y ] pos]
+  [{:keys [delta-time]} {:keys [pos orientation speed] :as bug}]
+  (let [[x y] pos
+        x-change (* delta-time  speed (Math/cos (m/radians orientation)))
+        y-change (* delta-time speed (Math/sin (m/radians orientation)))]
      (assoc bug :pos 
-      ;[(inc x) (inc y)]))) 
-            [
-             (+ x  (* speed (Math/cos (m/radians orientation))))
-             (+ y  (* speed (Math/sin (m/radians orientation))))])))
+            [(+ x  x-change)
+             (+ y  y-change)])))
 
 (defn turn
   "turns the bug in the given direction. Direction should be :left or :right"
@@ -68,7 +68,7 @@
 ;;the bug should rotate until it reaches its final orientation
 ;;without moving forward
 (defn move
-  [{:keys [pos orientation] :as bug} to-pos]
+  [{:keys [delta-time] :as dt} {:keys [pos orientation] :as bug} to-pos]
   (let [
         vec-to-orientation (map - to-pos pos)
         to-orientation (m/angle [1 0] vec-to-orientation)
@@ -78,7 +78,7 @@
         ]
     (if near-target?
       (waiting (assoc bug :pos to-pos))
-      (moving (move-forward turned-bug)))))
+      (moving (move-forward dt turned-bug)))))
 
 
 (defn waiting
