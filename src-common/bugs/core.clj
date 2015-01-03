@@ -4,6 +4,9 @@
             [bugs.gui :as gui]
             [bugs.bug :as b]))
 
+(def gamewidth 40)
+(def gameheight 40)
+
 (defn update-entity
   [bug]
   (assoc bug
@@ -12,11 +15,35 @@
     :angle (- (:orientation bug) 90)
     :me? true))
 
+
+
+(defn getScreenXPosition
+  [screen x]
+  (let [minx (/ (width screen) 2)
+        maxx (- gamewidth minx)]
+    (cond
+     (< x minx) minx
+     (> x maxx) maxx
+     :else x)))
+
+
+(defn getScreenYPosition
+  [screen y]
+  (let [miny (/ (height screen) 2)
+        maxy (- gameheight miny)]
+    (cond
+     (< y miny) miny
+     (> y maxy) maxy
+     :else y)))
+
+
 (defn update-screen!
   [screen entities]
   (doseq [{:keys [x y me?]} entities]
     (when me?
-      (position! screen 20 (/ 20 2))
+      (position! screen
+                 (getScreenXPosition screen x)
+                 (getScreenYPosition screen y))
       )
     )
   entities)
@@ -44,7 +71,7 @@
 
   :on-resize
   (fn [{:keys [width height] :as screen} entities]
-    (height! screen 20))
+    (height! screen 15))
 
   :on-render
   (fn [screen entities]
