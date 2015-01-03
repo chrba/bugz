@@ -49,6 +49,21 @@
   entities)
 
 
+(defn update-player-movement
+  [entity]
+  (if (:me? entity)
+    (cond
+     (and (key-pressed? :dpad-right) (key-pressed? :dpad-up)) (b/set-moving entity 45)
+     (and (key-pressed? :dpad-up) (key-pressed? :dpad-left)) (b/set-moving entity 135)
+     (and (key-pressed? :dpad-left) (key-pressed? :dpad-down)) (b/set-moving entity 225)
+     (and (key-pressed? :dpad-down) (key-pressed? :dpad-right)) (b/set-moving entity 315)
+     (key-pressed? :dpad-right) (b/set-moving entity 0)
+     (key-pressed? :dpad-up) (b/set-moving entity 90)
+     (key-pressed? :dpad-left) (b/set-moving entity 180)
+     (key-pressed? :dpad-down) (b/set-moving entity 270)
+     :else (b/set-waiting entity))
+    entity))
+
 (defscreen main-screen
   :on-show
   (fn [screen entities]
@@ -69,17 +84,9 @@
           pos [(:x coord) (:y coord)]]
       (b/set-destination me pos)))
 
-  :on-key-down
-  (fn [{:keys [key] :as screen} entities]
-    (let [player (find-first :me? entities)]
-      (cond
-       (= key (key-code :right)) (assoc player :speed 10)
-       :else player)))
+  
 
-  :on-key-up
-  (fn [screen entities]
-    (let [player (find-first :me? entities)]
-      (b/set-waiting player)))
+  
 
   :on-resize
   (fn [{:keys [width height] :as screen} entities]
@@ -93,6 +100,7 @@
                 (->> entity
                      (update-entity)
                      (gui/animate screen)
+                     (update-player-movement)
                      (b/move-forward screen))))
          (render! screen)
          (update-screen! screen)))

@@ -34,7 +34,7 @@
   [bug orientation]
   (assoc bug
     :waiting? false
-    :to-orientation orientation
+    :orientation orientation
     :speed velocity))
 
 (defn set-waiting
@@ -48,9 +48,6 @@
   [{:keys [delta-time] :as dt} {:keys [to-destination] :as bug}]
   (move dt bug to-destination))
 
-(defn turn-and-move
-  [{:keys [delta-time] :as dt} bug]
-  (move-forward dt bug))
 
 (defn move-forward  
   "moves the bug on step in the direction of the orientation"
