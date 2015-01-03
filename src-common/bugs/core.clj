@@ -69,6 +69,18 @@
           pos [(:x coord) (:y coord)]]
       (b/set-destination me pos)))
 
+  :on-key-down
+  (fn [{:keys [key] :as screen} entities]
+    (let [player (find-first :me? entities)]
+      (cond
+       (= key (key-code :right)) (assoc player :speed 10)
+       :else player)))
+
+  :on-key-up
+  (fn [screen entities]
+    (let [player (find-first :me? entities)]
+      (b/set-waiting player)))
+
   :on-resize
   (fn [{:keys [width height] :as screen} entities]
     (height! screen 15))
@@ -81,7 +93,7 @@
                 (->> entity
                      (update-entity)
                      (gui/animate screen)
-                     (b/walk-to-destination screen))))
+                     (b/move-forward screen))))
          (render! screen)
          (update-screen! screen)))
 

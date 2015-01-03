@@ -5,11 +5,11 @@
 (def near-target 0.3)
 (def velocity 18)
 
-(declare move waiting moving)
+(declare turn-to-target move-forward move waiting moving)
 
 (defn create-bug
   [pos orientation]
-  {:speed velocity
+  {:speed 0
    :pos pos
    :orientation orientation
    :waiting? true
@@ -30,11 +30,29 @@
   [bug pos]
   (assoc bug :to-destination pos))
 
+(defn set-moving
+  [bug orientation]
+  (assoc bug
+    :waiting? false
+    :to-orientation orientation
+    :speed velocity))
+
+(defn set-waiting
+  [bug]
+  (assoc bug
+    :waiting? true
+    :to-orientation (:orientation bug)
+    :speed 0))
+
 (defn walk-to-destination
   [{:keys [delta-time] :as dt} {:keys [to-destination] :as bug}]
   (move dt bug to-destination))
 
-(defn- move-forward  
+(defn turn-and-move
+  [{:keys [delta-time] :as dt} bug]
+  (move-forward dt bug))
+
+(defn move-forward  
   "moves the bug on step in the direction of the orientation"
   [{:keys [delta-time]} {:keys [pos orientation speed] :as bug}]
   (let [[x y] pos
@@ -59,9 +77,6 @@
      (< dist 0) (turn bug :left)
      :else (turn bug :right))))
 
-;;TODO: when the target is almost reached
-;;the bug should rotate until it reaches its final orientation
-;;without moving forward
 (defn- move
   [{:keys [delta-time] :as dt} {:keys [pos orientation] :as bug} to-pos]
   (let [
@@ -72,18 +87,9 @@
     ;;    rotate-only? (and (not= orientation to-orientation) (< (m/dist to-pos pos) 5))
         ]
     (if near-target?
-      (waiting (assoc bug :pos to-pos))
-      (moving (move-forward dt turned-bug)))))
+      (assoc bug :pos to-pos :waiting? true)
+      (assoc (move-forward dt turned-bug) :waiting? false))))
 
-
-(defn- waiting
-  [bug]
-  (assoc bug :waiting? true))
-
-
-(defn- moving
-  [bug]
-  (assoc bug :waiting? false))
 
 
 (defn carries-food?
