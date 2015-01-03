@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="40" height="40" tilewidth="32" tileheight="32">
+ <tileset firstgid="1" source="../../../../../Downloads/tiled-0.10.2/examples/desert.tsx"/>
+ <layer name="desert" width="40" height="40">
+  <data encoding="base64" compression="zlib">
+   eJztwwEJAAAMBKFL8v1jrsdQcNVUVVVVVVUfPdlnu4E=
+  </data>
+ </layer>
+ <layer name="obstacle" width="40" height="40">
+  <data encoding="base64" compression="zlib">
+   eJztlcsOwiAQRUddqSsfG3Vz1cREjWn//+vEBBKC0AIzLdX2JDe1tDAnQ4pE4wKlBTQoWHumMvdkUdDJZqmy8mQtWOPGmGv89ipbKzvPu2DUycX4SfZLEmm/tr1E4npj6580/+aH7lS89NW/3DNwQ+HzbuI/APH+Iw2xa+TUapoj4S7J0HyGCOj7rHXvUzmoHHVOzLXA9LFdTF4qF50rT4/N2XLxxfUDsx6cq7Rf33Tth8DvWO4qj4Y8G+bGnF8+J99YzLOcWiXX+XWqhHfRlcQE1TqpIDCesq8hXJ86MF4SyZ59kOhbG7l7bVNRnito3N8xSgtMDII3LXEPoQ==
+  </data>
+ </layer>
+</map>
