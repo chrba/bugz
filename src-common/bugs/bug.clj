@@ -17,6 +17,7 @@
    :home [26 26]
    :to-destination pos
    :spacial-mem {:target-cell nil :visited [] :seen []}
+   :last nil
    ;;:motion :moving
    ;; :brain {:action 0
    ;;         :path-following {:target-cell nil :seen [] :visited []}
@@ -48,6 +49,9 @@
   [{:keys [delta-time] :as dt} {:keys [to-destination] :as bug}]
   (move dt bug to-destination))
 
+(defn rewind
+  [bug]
+  (:last bug))
 
 (defn move-forward  
   "moves the bug on step in the direction of the orientation"
@@ -55,7 +59,9 @@
   (let [[x y] pos
         x-change (* delta-time  speed (Math/cos (m/radians orientation)))
         y-change (* delta-time speed (Math/sin (m/radians orientation)))]
-     (assoc bug :pos 
+     (assoc bug
+       :last bug
+       :pos 
             [(+ x  x-change)
              (+ y  y-change)])))
 

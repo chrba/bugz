@@ -2,7 +2,8 @@
   (:require [play-clj.core :refer :all]
             [play-clj.g2d :refer :all]
             [bugs.gui :as gui]
-            [bugs.bug :as b]))
+            [bugs.bug :as b]
+            [bugs.utils :as u]))
 
 (def gamewidth 40)
 (def gameheight 40)
@@ -43,9 +44,7 @@
     (when me?
       (position! screen
                  (getScreenXPosition screen x)
-                 (getScreenYPosition screen y))
-      )
-    )
+                 (getScreenYPosition screen y))))
   entities)
 
 
@@ -64,14 +63,43 @@
      :else (b/set-waiting entity))
     entity))
 
+
+
+(defn on-layer
+  [screen {:keys [x y width height] :as entity} layer-name]
+  (let [layer (tiled-map-layer screen layer-name)]
+    (->> (for [tile-x (range (int x) (+ x width))
+               tile-y (range (int y) (+ y height))]
+           (-> (tiled-map-cell layer tile-x tile-y)
+               nil?
+               not))
+         (some identity))))
+
+(defn illegal-position
+  [{:keys [x y width height] :as entity}]
+  (or
+   (< x 0) 
+   (> x (- gamewidth width))
+   (< y 0)
+   (> y (- gameheight height))))
+
+(defn prevent-move
+  [screen entity]
+  (if (or
+       (on-layer screen entity "obstacle")
+       (illegal-position entity))
+    (b/set-waiting (b/rewind entity))
+    entity))
+
+
 (defscreen main-screen
   :on-show
   (fn [screen entities]
-       (->> (orthogonal-tiled-map "desert.tmx" (/ 1 32))
+       (->> (orthogonal-tiled-map "desert2.tmx" (/ 1 32))
             (update! screen :camera (orthographic) :renderer))
         (comment (update! screen :renderer (stage)))
-        (let [sheet (texture "bug-sprite.png")
-              tiles (texture! sheet :split 50 45)
+        (let [sheet (texture "bug-sprite2.png")
+              tiles (texture! sheet :split 50 40)
               player-imgs (for [col [0 1 2 3]]
                             (assoc (texture (aget tiles 0 col))
                               :width 1 :height 1))]                   
@@ -84,9 +112,7 @@
           pos [(:x coord) (:y coord)]]
       (b/set-destination me pos)))
 
-  
-
-  
+    
 
   :on-resize
   (fn [{:keys [width height] :as screen} entities]
@@ -101,6 +127,7 @@
                      (update-entity)
                      (gui/animate screen)
                      (update-player-movement)
+                     (prevent-move screen)
                      (b/move-forward screen))))
          (render! screen)
          (update-screen! screen)))
