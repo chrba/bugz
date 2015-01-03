@@ -8,7 +8,7 @@
 
 
 (defn create-sprite
-  [img split-x split-y width height num]
+  [& {:keys [img split-x split-y width height num]}]
   (let [sheet (texture img)
         tiles (texture! sheet :split split-x split-y)
         images (for [col (range num)]

@@ -98,9 +98,16 @@
        (->> (orthogonal-tiled-map "desert2.tmx" (/ 1 32))
             (update! screen :camera (orthographic) :renderer))
         (comment (update! screen :renderer (stage)))
-        (let [sheet (texture "bug-sprite2.png")
+        (let [player-imgs (u/create-sprite
+                           :img "bug-sprite2.png"
+                           :split-x 50
+                           :split-y 40
+                           :width 1
+                           :height 1
+                           :num 4)
+              sheet (texture "bug-sprite2.png")
               tiles (texture! sheet :split 50 40)
-              player-imgs (for [col [0 1 2 3]]
+              player-imgss (for [col [0 1 2 3]]
                             (assoc (texture (aget tiles 0 col))
                               :width 1 :height 1))]                   
           (gui/create-entity player-imgs [5 0] 0)))
