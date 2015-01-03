@@ -13,6 +13,7 @@
    :pos pos
    :orientation orientation
    :waiting? true
+   :player? false
    :food 0
    :home [26 26]
    :to-destination pos

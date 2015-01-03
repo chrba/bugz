@@ -13,8 +13,7 @@
   (assoc bug
     :x (get-in bug [:pos 0])
     :y (get-in bug [:pos 1])
-    :angle (- (:orientation bug) 90)
-    :me? true))
+    :angle (- (:orientation bug) 90)))
 
 
 
@@ -40,8 +39,8 @@
 
 (defn update-screen!
   [screen entities]
-  (doseq [{:keys [x y me?]} entities]
-    (when me?
+  (doseq [{:keys [x y player?]} entities]
+    (when player?
       (position! screen
                  (getScreenXPosition screen x)
                  (getScreenYPosition screen y))))
@@ -50,7 +49,7 @@
 
 (defn update-player-movement
   [entity]
-  (if (:me? entity)
+  (if (:player? entity)
     (cond
      (and (key-pressed? :dpad-right) (key-pressed? :dpad-up)) (b/set-moving entity 45)
      (and (key-pressed? :dpad-up) (key-pressed? :dpad-left)) (b/set-moving entity 135)
@@ -92,6 +91,8 @@
     entity))
 
 
+
+
 (defscreen main-screen
   :on-show
   (fn [screen entities]
@@ -100,17 +101,21 @@
         (comment (update! screen :renderer (stage)))
         (let [player-imgs (u/create-sprite
                            :img "bug-sprite2.png"
-                           :split-x 50
-                           :split-y 40
-                           :width 1
-                           :height 1
+                           :split-x 50 :split-y 40
+                           :width 1 :height 1
                            :num 4)
-              sheet (texture "bug-sprite2.png")
-              tiles (texture! sheet :split 50 40)
-              player-imgss (for [col [0 1 2 3]]
-                            (assoc (texture (aget tiles 0 col))
-                              :width 1 :height 1))]                   
-          (gui/create-entity player-imgs [5 0] 0)))
+              enemy-imgs (u/create-sprite
+                          :img "enemy.png"
+                          :split-x 50 :split-y 40
+                          :width 0.8 :height 0.8
+                          :num 4)
+              
+              player (assoc (gui/create-entity player-imgs [5 0] 0)
+                       :player? true)
+              enemies (for [i (range 10)]
+                        (gui/create-entity enemy-imgs
+                                           [(int (rand 10)) (int (rand 10))] (int (rand 360))))]
+          (flatten [player enemies])))
   
   :on-touch-down
   (fn [screen entities]
