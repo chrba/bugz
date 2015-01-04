@@ -3,7 +3,8 @@
             [play-clj.g2d :refer :all]
             [bugs.bug :as b]
             [bugs.utils :as u]
-            [bugs.gui :as g]))
+            [bugs.gui :as g]
+            [bugs.math :as m]))
 
 
 (defn create-enemies
@@ -11,7 +12,7 @@
   (letfn [(create [imgs & pos]
             (for [[x y angle] pos]
               (g/create-entity imgs [x y] angle)))]
-    (for [i (range 4)]
+    (for [i (range 1)]
       (create imgs [5 8 1]))))
 
 
@@ -22,3 +23,25 @@
      (:player? bug) bug
      next-dest? (b/set-moving bug (rand-int 360))
      :else bug)))
+
+(defn attack2
+  [player entity]
+  (if (:player? entity)
+    entity
+    (let [v1 [(:x player) (:y player)]
+          v2 [(:x entity) (:y entity)]
+          dist (m/dist v1 v2)
+          ]
+      (do (println dist) entity))))
+
+(defn attack
+  [player bug]
+  (if (:player? bug) bug
+      (let [v1 [(:x player) (:y player)]
+            v2 [(:x bug) (:y bug)]
+            dist (m/dist v1 v2) ]
+        (if (< dist u/attack-dist)
+          (let [vec (map - v2 v1)
+                to-orientation (m/angle [-1 0] vec)]
+            (assoc bug :orientation to-orientation))
+          bug))))

@@ -145,17 +145,19 @@
   :on-render
   (fn [screen entities]
     (clear!)
-    (->> entities
-         (map (fn [entity]
-                (->> entity
-                     (update-entity)
-                     (gui/animate screen)
-                     (update-player-movement)
-                     (e/rand-enemy-dest screen)
-                     (prevent-move screen)
-                     (b/move-forward screen))))
-         (render! screen)
-         (update-screen! screen)))
+    (let [player (update-entity (find-first :player? entities))]
+      (->> entities
+           (map (fn [entity]
+                  (->> entity
+                       (update-entity)
+                       (gui/animate screen)
+                       (update-player-movement)
+                       (e/rand-enemy-dest screen)
+                       (prevent-move screen)
+                       (e/attack player)
+                       (b/move-forward screen))))
+           (render! screen)
+           (update-screen! screen))))
 
 
 

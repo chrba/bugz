@@ -6,6 +6,7 @@
 
 (def gamewidth 40)
 (def gameheight 40)
+(def attack-dist 5)
 
 
 (defn create-sprite
