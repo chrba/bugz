@@ -4,7 +4,8 @@
             [bugs.gui :as gui]
             [bugs.bug :as b]))
 
-
+(def gamewidth 40)
+(def gameheight 40)
 
 
 (defn create-sprite

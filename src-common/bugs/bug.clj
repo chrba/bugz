@@ -46,9 +46,15 @@
     :to-orientation (:orientation bug)
     :speed 0))
 
+
+(defn- remove-last
+  [bug]
+  (assoc bug :last nil))
+
+
 (defn walk-to-destination
   [{:keys [delta-time] :as dt} {:keys [to-destination] :as bug}]
-  (move dt bug to-destination))
+  (assoc (move dt bug to-destination) :last (remove-last bug)))
 
 (defn rewind
   [bug]
@@ -61,7 +67,7 @@
         x-change (* delta-time  speed (Math/cos (m/radians orientation)))
         y-change (* delta-time speed (Math/sin (m/radians orientation)))]
      (assoc bug
-       :last bug
+       :last (remove-last bug)
        :pos 
             [(+ x  x-change)
              (+ y  y-change)])))
