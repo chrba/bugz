@@ -117,19 +117,7 @@
               enemies (e/create-enemies enemy-imgs)]
           (flatten [player enemies])))
   
-;move enemies
-;prevent from initialiy invalid position
-;attack when near 
-;death when cought
-;get food
-;make home
-;animate queen at home
-;animate queen on text screen
-;make different kind of enemies
-
-
 ;  :on-touch-down
-
 ;  (fn [screen entities]
 ;    (let [me (first entities)
 ;          coord (input->screen screen (:input-x screen) (:input-y screen))

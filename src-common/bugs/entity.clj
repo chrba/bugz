@@ -24,15 +24,6 @@
      next-dest? (b/set-moving bug (rand-int 360))
      :else bug)))
 
-(defn attack2
-  [player entity]
-  (if (:player? entity)
-    entity
-    (let [v1 [(:x player) (:y player)]
-          v2 [(:x entity) (:y entity)]
-          dist (m/dist v1 v2)
-          ]
-      (do (println dist) entity))))
 
 (defn attack
   [player bug]
