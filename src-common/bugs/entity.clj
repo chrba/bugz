@@ -11,7 +11,7 @@
   [imgs]
   (letfn [(create [imgs & pos]
             (for [[x y angle] pos]
-              (g/create-entity imgs [x y] angle)))]
+              (g/create-entity imgs x y angle)))]
     (for [i (range 1)]
       (create imgs [5 8 1]))))
 

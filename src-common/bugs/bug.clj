@@ -8,9 +8,9 @@
 (declare turn-to-target move-forward move waiting moving)
 
 (defn create-bug
-  [pos orientation]
+  [x y orientation]
   {:speed 0
-   :pos pos
+   :pos [x y]
    :orientation orientation
    :waiting? true
    :player? false

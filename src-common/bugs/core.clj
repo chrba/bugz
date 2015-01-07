@@ -112,7 +112,7 @@
                           :width 1.5 :height 1.5
                           :num 4)
               
-              player (assoc (gui/create-entity player-imgs [5 0] 0)
+              player (assoc (gui/create-entity player-imgs 5 0 0)
                        :player? true)
               enemies (e/create-enemies enemy-imgs)]
           (flatten [player enemies])))

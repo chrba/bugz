@@ -7,8 +7,9 @@
 
 ;creates an animated entity     
 (defn create-entity
-  [imgs pos angle]
-  (let [me (b/create-bug pos angle)
+  [imgs x y angle]
+  (let [
+        me (b/create-bug x y angle)
         entity (apply with-animation imgs)]
     (merge entity me)))
  
