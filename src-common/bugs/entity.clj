@@ -15,8 +15,26 @@
     (for [i (range 1)]
       (create imgs [5 8 1]))))
 
+(defn update-player-movement
+  [entity]
+  (if (:player? entity)
+    (cond
+     (and (key-pressed? :dpad-right) (key-pressed? :dpad-up))
+     (b/set-moving entity -45)
+     (and (key-pressed? :dpad-up) (key-pressed? :dpad-left))
+     (b/set-moving entity 45)
+     (and (key-pressed? :dpad-left) (key-pressed? :dpad-down))
+     (b/set-moving entity 135)
+     (and (key-pressed? :dpad-down) (key-pressed? :dpad-right))
+     (b/set-moving entity 235)
+     (key-pressed? :dpad-right) (b/set-moving entity -90)
+     (key-pressed? :dpad-up) (b/set-moving entity 0)
+     (key-pressed? :dpad-left) (b/set-moving entity 90)
+     (key-pressed? :dpad-down) (b/set-moving entity 180)
+     :else (b/set-waiting entity))
+    entity))
 
-(defn rand-enemy-dest
+(defn update-enemy-movement
   [{:keys [delta-time] :as dt} bug]
   (let [next-dest? (<  (rand-int 100) 5)]
     (cond

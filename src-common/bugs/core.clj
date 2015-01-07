@@ -36,54 +36,14 @@
   entities)
 
 
-(defn update-player-movement
-  [entity]
-  (if (:player? entity)
-    (cond
-     (and (key-pressed? :dpad-right) (key-pressed? :dpad-up))
-     (b/set-moving entity -45)
-     (and (key-pressed? :dpad-up) (key-pressed? :dpad-left))
-     (b/set-moving entity 45)
-     (and (key-pressed? :dpad-left) (key-pressed? :dpad-down))
-     (b/set-moving entity 135)
-     (and (key-pressed? :dpad-down) (key-pressed? :dpad-right))
-     (b/set-moving entity 235)
-     (key-pressed? :dpad-right) (b/set-moving entity -90)
-     (key-pressed? :dpad-up) (b/set-moving entity 0)
-     (key-pressed? :dpad-left) (b/set-moving entity 90)
-     (key-pressed? :dpad-down) (b/set-moving entity 180)
-     :else (b/set-waiting entity))
-    entity))
-
-
-
-(defn on-layer
-  [screen {:keys [x y width height] :as entity} layer-name]
-  (let [layer (tiled-map-layer screen layer-name)]
-    (->> (for [tile-x (range (int x) (+ x width))
-               tile-y (range (int y) (+ y height))]
-           (-> (tiled-map-cell layer tile-x tile-y)
-               nil?
-               not))
-         (some identity))))
-
-(defn illegal-position
-  [{:keys [x y width height] :as entity}]
-  (or
-   (< x 0) 
-   (> x (- u/gamewidth width))
-   (< y 0)
-   (> y (- u/gameheight height))))
 
 (defn prevent-move
   [screen entity]
   (if (or
-       (on-layer screen entity "obstacle")
-       (illegal-position entity))
+       (u/on-layer screen entity "obstacle")
+       (u/illegal-position entity))
     (b/set-waiting (b/rewind entity))
     entity))
-
-
 
 
 (defscreen main-screen
@@ -129,8 +89,8 @@
            (map (fn [entity]
                   (->> entity
                        (gui/animate screen)
-                       (update-player-movement)
-                       (e/rand-enemy-dest screen)
+                       (e/update-player-movement)
+                       (e/update-enemy-movement screen)
                        (e/attack player)
                        (b/move-forward screen)
                        (prevent-move screen)

@@ -20,3 +20,20 @@
 
 
 
+(defn on-layer
+  [screen {:keys [x y width height] :as entity} layer-name]
+  (let [layer (tiled-map-layer screen layer-name)]
+    (->> (for [tile-x (range (int x) (+ x width))
+               tile-y (range (int y) (+ y height))]
+           (-> (tiled-map-cell layer tile-x tile-y)
+               nil?
+               not))
+         (some identity))))
+
+(defn illegal-position
+  [{:keys [x y width height] :as entity}]
+  (or
+   (< x 0) 
+   (> x (- gamewidth width))
+   (< y 0)
+   (> y (- gameheight height))))
