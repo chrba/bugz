@@ -16,6 +16,8 @@
    :waiting? true
    :player? false
    :last nil
+   :killed? false
+   :eating? false
    })
 
 

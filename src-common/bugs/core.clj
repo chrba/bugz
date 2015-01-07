@@ -40,6 +40,7 @@
 (defn prevent-move
   [screen entity]
   (if (or
+       (:killed? entity)
        (u/on-layer screen entity "obstacle")
        (u/illegal-position entity))
     (b/set-waiting (b/rewind entity))
@@ -51,9 +52,8 @@
   (fn [screen entities]
        (->> (orthogonal-tiled-map "desert2.tmx" (/ 1 32))
             (update! screen :camera (orthographic) :renderer))
-        (comment (update! screen :renderer (stage)))
         (let [player-imgs (u/create-sprite
-                           :img "bug-sprite2.png"
+                           :img "bug-sprite3.png"
                            :split-x 50 :split-y 40
                            :width 1 :height 1
                            :num 4)
@@ -83,6 +83,7 @@
 
   :on-render
   (fn [screen entities]
+    
     (clear!)
     (let [player (find-first :player? entities)]
       (->> entities
@@ -92,6 +93,7 @@
                        (e/update-player-movement)
                        (e/update-enemy-movement screen)
                        (e/attack player)
+                       (e/kill-player entities)
                        (b/move-forward screen)
                        (prevent-move screen)
                        )))

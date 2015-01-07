@@ -7,7 +7,7 @@
 (def gamewidth 40)
 (def gameheight 40)
 (def attack-dist 5)
-
+(def kill-dist 1)
 
 (defn create-sprite
   [& {:keys [img split-x split-y width height num]}]
@@ -37,3 +37,10 @@
    (> x (- gamewidth width))
    (< y 0)
    (> y (- gameheight height))))
+
+(defn game-over
+  [player entities]
+  (if (:killed? player)
+    (map #(assoc % :speed 0)
+         entities)
+    entities))
