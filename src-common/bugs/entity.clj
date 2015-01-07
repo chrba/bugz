@@ -33,6 +33,6 @@
             dist (m/dist v1 v2) ]
         (if (< dist u/attack-dist)
           (let [vec (map - v2 v1)
-                to-orientation (m/angle [-1 0] vec)]
-            (assoc bug :orientation to-orientation))
+                to-orientation (m/angle [0 -1] vec)]
+            (assoc bug :angle to-orientation))
           bug))))

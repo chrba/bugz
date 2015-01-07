@@ -7,13 +7,6 @@
             [bugs.utils :as u]))
 
 
-(defn update-entity
-  [bug]
-  (assoc bug
-    :angle (- (:orientation bug) 90)))
-
-
-
 (defn getScreenXPosition
   [screen x]
   (let [minx (/ (width screen) 2)
@@ -48,17 +41,17 @@
   (if (:player? entity)
     (cond
      (and (key-pressed? :dpad-right) (key-pressed? :dpad-up))
-     (b/set-moving entity 45)
+     (b/set-moving entity -45)
      (and (key-pressed? :dpad-up) (key-pressed? :dpad-left))
-     (b/set-moving entity 135)
+     (b/set-moving entity 45)
      (and (key-pressed? :dpad-left) (key-pressed? :dpad-down))
-     (b/set-moving entity 225)
+     (b/set-moving entity 135)
      (and (key-pressed? :dpad-down) (key-pressed? :dpad-right))
-     (b/set-moving entity 315)
-     (key-pressed? :dpad-right) (b/set-moving entity 0)
-     (key-pressed? :dpad-up) (b/set-moving entity 90)
-     (key-pressed? :dpad-left) (b/set-moving entity 180)
-     (key-pressed? :dpad-down) (b/set-moving entity 270)
+     (b/set-moving entity 235)
+     (key-pressed? :dpad-right) (b/set-moving entity -90)
+     (key-pressed? :dpad-up) (b/set-moving entity 0)
+     (key-pressed? :dpad-left) (b/set-moving entity 90)
+     (key-pressed? :dpad-down) (b/set-moving entity 180)
      :else (b/set-waiting entity))
     entity))
 
@@ -131,11 +124,10 @@
   :on-render
   (fn [screen entities]
     (clear!)
-    (let [player (update-entity (find-first :player? entities))]
+    (let [player (find-first :player? entities)]
       (->> entities
            (map (fn [entity]
                   (->> entity
-                       (update-entity)
                        (gui/animate screen)
                        (update-player-movement)
                        (e/rand-enemy-dest screen)
