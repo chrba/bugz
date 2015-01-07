@@ -8,11 +8,11 @@
 (declare turn-to-target move-forward move waiting moving)
 
 (defn create-bug
-  [x y orientation]
+  [x y angle]
   {:speed 0
    :x x 
    :y y
-   :orientation orientation
+   :orientation angle
    :waiting? true
    :player? false
    :last nil
@@ -20,17 +20,16 @@
 
 
 (defn set-moving
-  [bug orientation]
+  [bug angle]
   (assoc bug
     :waiting? false
-    :orientation orientation
+    :orientation angle
     :speed velocity))
 
 (defn set-waiting
   [bug]
   (assoc bug
     :waiting? true
-    :to-orientation (:orientation bug)
     :speed 0))
 
 
@@ -46,7 +45,7 @@
   (:last bug))
 
 (defn move-forward  
-  "moves the bug on step in the direction of the orientation"
+  "moves the bug on step in the direction of the angle"
   [{:keys [delta-time]} {:keys [:x :y orientation speed] :as bug}]
   (let [
         x-change (* delta-time  speed (Math/cos (m/radians orientation)))
