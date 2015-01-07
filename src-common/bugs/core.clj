@@ -10,8 +10,6 @@
 (defn update-entity
   [bug]
   (assoc bug
-    :x (get-in bug [:pos 0])
-    :y (get-in bug [:pos 1])
     :angle (- (:orientation bug) 90)))
 
 
@@ -141,9 +139,10 @@
                        (gui/animate screen)
                        (update-player-movement)
                        (e/rand-enemy-dest screen)
-                       (prevent-move screen)
                        (e/attack player)
-                       (b/move-forward screen))))
+                       (b/move-forward screen)
+                       (prevent-move screen)
+                       )))
            (render! screen)
            (update-screen! screen))))
 

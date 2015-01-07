@@ -10,7 +10,8 @@
 (defn create-bug
   [x y orientation]
   {:speed 0
-   :pos [x y]
+   :x x 
+   :y y
    :orientation orientation
    :waiting? true
    :player? false
@@ -46,15 +47,14 @@
 
 (defn move-forward  
   "moves the bug on step in the direction of the orientation"
-  [{:keys [delta-time]} {:keys [pos orientation speed] :as bug}]
-  (let [[x y] pos
+  [{:keys [delta-time]} {:keys [:x :y orientation speed] :as bug}]
+  (let [
         x-change (* delta-time  speed (Math/cos (m/radians orientation)))
         y-change (* delta-time speed (Math/sin (m/radians orientation)))]
      (assoc bug
        :last (remove-last bug)
-       :pos 
-            [(+ x  x-change)
-             (+ y  y-change)])))
+       :x (+ x x-change)
+       :y (+ y y-change))))
 
 
 
