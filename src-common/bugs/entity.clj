@@ -7,6 +7,13 @@
             [bugs.math :as m]))
 
 
+(defn create-food
+  [x y]
+  {:x x
+   :y y
+   :food? true})
+
+
 (defn create-enemies
   [imgs]
   (letfn [(create [imgs & pos]
@@ -14,6 +21,8 @@
               (g/create-entity imgs x y angle)))]
     (for [i (range 1)]
       (create imgs [5 8 1]))))
+
+
 
 (defn update-player-movement
   [entity]

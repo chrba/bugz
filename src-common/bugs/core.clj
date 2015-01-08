@@ -56,15 +56,22 @@
                            :img "bug-sprite3.png"
                            :split-x 50 :split-y 40
                            :width 1 :height 1
-                           :num 4)
+                           :num 5)
               enemy-imgs (u/create-sprite
                           :img "enemy.png"
                           :split-x 50 :split-y 40
                           :width 1.5 :height 1.5
                           :num 4)
+              food      (u/create-sprite
+                         :img "food.png"
+                         :split-x 30 :split-y 28
+                         :width 1 :height 1
+                         num 6)
               
               player (assoc (gui/create-entity player-imgs 5 0 0)
                        :player? true)
+              
+              ;player (assoc (gui/with-moving-animation player-imgs 0.05 (b/create-bug 5 0 0)) :player? true)
               enemies (e/create-enemies enemy-imgs)]
           (flatten [player enemies])))
   
@@ -89,7 +96,8 @@
       (->> entities
            (map (fn [entity]
                   (->> entity
-                       (gui/animate screen)
+                       ;(gui/animate screen)
+                       (gui/animate-moving screen)
                        (e/update-player-movement)
                        (e/update-enemy-movement screen)
                        (e/attack player)
