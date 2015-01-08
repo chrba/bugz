@@ -68,10 +68,10 @@
                          :width 1 :height 1
                          num 6)
               
-              player (assoc (gui/create-entity player-imgs 5 0 0)
+              playerx (assoc (gui/create-entity player-imgs 5 0 0)
                        :player? true)
               
-              ;player (assoc (gui/with-moving-animation player-imgs 0.05 (b/create-bug 5 0 0)) :player? true)
+              player (gui/with-moving-animation player-imgs 0.05 (e/create-player 5 0 0))
               enemies (e/create-enemies enemy-imgs)]
           (flatten [player enemies])))
   

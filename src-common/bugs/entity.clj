@@ -14,6 +14,12 @@
    :food? true})
 
 
+(defn create-player
+  [x y angle]
+ (let [player (b/create-bug x y angle)]
+   (assoc player :player? true)))
+
+
 (defn create-enemies
   [imgs]
   (letfn [(create [imgs & pos]
