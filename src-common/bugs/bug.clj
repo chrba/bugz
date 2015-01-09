@@ -15,6 +15,7 @@
    :angle angle
    :waiting? true
    :player? false
+   :enemy? false
    :last nil
    :killed? false
    :eating? false
@@ -49,13 +50,14 @@
 (defn move-forward  
   "moves the bug on step in the direction of the angle"
   [{:keys [delta-time]} {:keys [x y angle speed] :as bug}]
-  (let [
-        x-change (* delta-time  speed (Math/cos (m/radians (+ 90 angle))))
-        y-change (* delta-time speed (Math/sin (m/radians (+ 90 angle))))]
-     (assoc bug
-       :last (remove-last bug)
-       :x (+ x x-change)
-       :y (+ y y-change))))
+  (if (not (and x y angle speed)) bug
+      (let [
+            x-change (* delta-time  speed (Math/cos (m/radians (+ 90 angle))))
+            y-change (* delta-time speed (Math/sin (m/radians (+ 90 angle))))]
+        (assoc bug
+          :last (remove-last bug)
+          :x (+ x x-change)
+          :y (+ y y-change)))))
 
 
 

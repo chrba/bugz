@@ -7,8 +7,6 @@
 
 
 
-
-
 (defn with-moving-animation
   [imgs duration entity]
   (let [[killed stand & walk] imgs
@@ -20,10 +18,11 @@
     (merge anim entity)))
 
 (defn animate-moving
-  [screen {:keys [killed walk stand] :as entity}]
+  [screen {:keys [killed walk stand animation] :as entity}]
    (cond
     (:killed? entity) (merge entity killed)
     (:waiting? entity) (merge entity stand)
+    (:animated? entity) (merge entity (animation->texture screen animation))
     :else (merge entity (animation->texture screen walk))))
 
 ;returns an entity with one animate step applied: must

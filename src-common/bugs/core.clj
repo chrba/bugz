@@ -47,6 +47,8 @@
     entity))
 
 
+
+
 (defscreen main-screen
   :on-show
   (fn [screen entities]
@@ -62,18 +64,16 @@
                           :split-x 50 :split-y 40
                           :width 1.5 :height 1.5
                           :num 4)
-              food      (u/create-sprite
-                         :img "food.png"
+              food-imgsx (u/create-sprite
+                         :img "food2.png"
                          :split-x 30 :split-y 28
-                         :width 1 :height 1
-                         num 6)
+                         :width 0.4 :height 0.4
+                         :num 5)
               
-              playerx (assoc (gui/create-entity player-imgs 5 0 0)
-                       :player? true)
-              
-              player (gui/with-moving-animation player-imgs 0.05 (e/create-player 5 0 0))
+              food (e/create-food food-imgsx 5 1 0)
+              player (e/create-player player-imgs)
               enemies (e/create-enemies enemy-imgs)]
-          (flatten [player enemies])))
+          (flatten [player enemies food])))
   
 ;  :on-touch-down
 ;  (fn [screen entities]
@@ -97,7 +97,7 @@
            (map (fn [entity]
                   (->> entity
                        ;(gui/animate screen)
-                       (gui/animate-moving screen)
+                       (e/animate-moving screen)
                        (e/update-player-movement)
                        (e/update-enemy-movement screen)
                        (e/attack player)

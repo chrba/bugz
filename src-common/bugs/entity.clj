@@ -7,26 +7,53 @@
             [bugs.math :as m]))
 
 
+(defn animate-moving
+  [screen {:keys [killed walk stand animation] :as entity}]
+   (cond
+    (:killed? entity) (merge entity killed)
+    (:waiting? entity) (merge entity stand)
+    (:animated? entity) (merge entity (animation->texture screen animation))
+    :else (merge entity (animation->texture screen walk))))
+
+
 (defn create-food
-  [x y]
-  {:x x
-   :y y
-   :food? true})
+  [imgs x y angle]
+  (do (println (count imgs)) (let [entity {:x x :y y :angle 0}
+                         [stand & other] imgs
+                         anim (assoc stand
+                                :animated? true
+                                :animation (animation 0.2 other :set-play-mode
+                                                      (play-mode :loop-pingpong)))]
+           (merge anim entity))))
 
 
-(defn create-player
-  [x y angle]
- (let [player (b/create-bug x y angle)]
-   (assoc player :player? true)))
+(defn create-entity
+  [imgs x y angle]
+  (let [entity (b/create-bug x y angle)
+        [killed stand & walk] imgs
+        anim (assoc stand
+               :walk (animation 0.05 walk :set-play-mode (play-mode :loop-pingpong))
+               :stand stand
+               :killed killed)]
+    (merge anim entity)))
 
 
 (defn create-enemies
   [imgs]
   (letfn [(create [imgs & pos]
             (for [[x y angle] pos]
-              (g/create-entity imgs x y angle)))]
+              (assoc (create-entity imgs x y angle)
+                :enemy? true)))]
     (for [i (range 1)]
       (create imgs [5 8 1]))))
+
+
+(defn create-player
+  [imgs]
+ (let [player (create-entity imgs 5 0 0)]
+   (assoc player :player? true)))
+
+
 
 
 
@@ -54,7 +81,7 @@
   [entities entity]
   (if (:player? entity)
     (let [player entity
-          enemies (remove :player? entities)
+          enemies (filter :enemy? entities)
           dists (map #(m/dist
                        [(:x player) (:y player)]
                        [(:x %1) (:y %1)])
@@ -66,17 +93,19 @@
 
 (defn update-enemy-movement
   [{:keys [delta-time] :as dt} bug]
-  (let [next-dest? (<  (rand-int 100) 5)]
-    (cond
-     (:player? bug) bug
-     (:eating? bug) (b/set-waiting bug)
-     next-dest? (b/set-moving bug (rand-int 360))
-     :else bug)))
+  (if (:enemy? bug)
+    (let [next-dest? (<  (rand-int 100) 5)]
+      (cond
+       (:player? bug) bug
+       (:eating? bug) (b/set-waiting bug)
+       next-dest? (b/set-moving bug (rand-int 360))
+       :else bug))
+      bug))
 
 
 (defn attack
   [player bug]
-  (if (:player? bug) bug
+  (if (:enemy? bug)
       (let [v1 [(:x player) (:y player)]
             v2 [(:x bug) (:y bug)]
             dist (m/dist v1 v2) ]
@@ -86,5 +115,6 @@
           (let [vec (map - v2 v1)
                 to-orientation (m/angle [0 -1] vec)]
             (assoc bug :angle to-orientation))
-          :else bug))))
+          :else bug))
+      bug))
 
