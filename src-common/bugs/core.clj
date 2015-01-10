@@ -90,27 +90,28 @@
 
   :on-render
   (fn [screen entities]
-    
     (clear!)
-    (let [player (find-first :player? entities)]
-      (->> entities
+    (let [player (->> (find-first :player? entities)
+                      (e/update-player-movement)
+                      (e/kill-player entities))
+          
+          enemies (->> (filter :enemy? entities)
+                       (map (fn [entity] (->> entity
+                                              (e/update-enemy-movement screen)
+                                              (e/attack player)))))
+          
+          food (->> (filter :food? entities)
+                    (e/take-food player)
+                    (e/drop-food player))]
+      
+      (->> (flatten [enemies player food])
            (map (fn [entity]
                   (->> entity
-                       ;(gui/animate screen)
-                       (e/animate-moving screen)
-                       (e/update-player-movement)
-                       (e/update-enemy-movement screen)
-                       (e/attack player)
-                       (e/kill-player entities)
                        (b/move-forward screen)
                        (prevent-move screen)
-                       )))
+                       (e/animate-moving screen))))
            (render! screen)
-           (update-screen! screen))))
-
-
-
-  )
+           (update-screen! screen)))))
 
 (defgame bugs
   :on-create

@@ -1,6 +1,7 @@
 (ns bugs.utils
   (:require [play-clj.core :refer :all]
             [play-clj.g2d :refer :all]
+            [bugs.math :as m]
             [bugs.gui :as gui]
             [bugs.bug :as b]))
 
@@ -44,3 +45,9 @@
     (map #(assoc % :speed 0)
          entities)
     entities))
+
+(defn dist
+ [entity1 entity2]
+ (let [v1 [(:x entity1) (:y entity1)]
+       v2 [(:x entity2) (:y entity2)]]
+   (m/dist v1 v2)))

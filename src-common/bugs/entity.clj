@@ -18,7 +18,7 @@
 
 (defn create-food
   [imgs x y angle]
-  (do (println (count imgs)) (let [entity {:x x :y y :angle 0}
+  (do (println (count imgs)) (let [entity {:x x :y y :angle 0 :food? true}
                          [stand & other] imgs
                          anim (assoc stand
                                 :animated? true
@@ -26,6 +26,28 @@
                                                       (play-mode :loop-pingpong)))]
            (merge anim entity))))
 
+
+
+(defn take-food
+  [entity foods]
+  (let [picked (find-first #(< (u/dist entity %) 1) foods)
+        other (remove #{picked} foods)]
+    (if (not (nil? picked))
+      (conj other (assoc picked
+                    :x (:x entity)
+                    :y (:y entity)
+                    :picked? true))
+      foods)))
+
+
+(defn drop-food
+  [entity foods]
+ (let [picked (find-first :picked? foods)]
+   (if (and
+        (not (nil? picked))
+        (< (u/dist entity (:home entity)) 1))
+     (remove #{picked} foods)
+     foods)))
 
 (defn create-entity
   [imgs x y angle]
@@ -44,14 +66,16 @@
             (for [[x y angle] pos]
               (assoc (create-entity imgs x y angle)
                 :enemy? true)))]
-    (for [i (range 1)]
+    (for [i (range 10)]
       (create imgs [5 8 1]))))
 
 
 (defn create-player
   [imgs]
  (let [player (create-entity imgs 5 0 0)]
-   (assoc player :player? true)))
+   (assoc player
+     :player? true
+     :home {:x 1 :y 1})))
 
 
 
