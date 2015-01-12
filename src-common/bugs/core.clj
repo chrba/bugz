@@ -69,11 +69,13 @@
                          :split-x 30 :split-y 28
                          :width 0.4 :height 0.4
                          :num 5)
+              home      (assoc (texture "home.png")
+                          :home? true :x 1 :y 2)
               
               food (e/create-food food-imgsx 5 1 0)
               player (e/create-player player-imgs)
               enemies (e/create-enemies enemy-imgs)]
-          (flatten [player enemies food])))
+          (flatten [home player enemies food])))
   
 ;  :on-touch-down
 ;  (fn [screen entities]
@@ -91,6 +93,7 @@
   :on-render
   (fn [screen entities]
     (clear!)
+    (render! screen [(find-first :home? entities)])
     (let [player (->> (find-first :player? entities)
                       (e/update-player-movement)
                       (e/kill-player entities))

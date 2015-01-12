@@ -18,13 +18,13 @@
 
 (defn create-food
   [imgs x y angle]
-  (do (println (count imgs)) (let [entity {:x x :y y :angle 0 :food? true}
-                         [stand & other] imgs
-                         anim (assoc stand
-                                :animated? true
-                                :animation (animation 0.2 other :set-play-mode
-                                                      (play-mode :loop-pingpong)))]
-           (merge anim entity))))
+  (let [entity {:x x :y y :angle 0 :food? true}
+        [stand & other] imgs
+        anim (assoc stand
+               :animated? true
+               :animation (animation 0.2 other :set-play-mode
+                                     (play-mode :loop-pingpong)))]
+    (merge anim entity)))
 
 
 
