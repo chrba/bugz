@@ -49,6 +49,9 @@
      (remove #{picked} foods)
      foods)))
 
+
+
+
 (defn create-entity
   [imgs x y angle]
   (let [entity (b/create-bug x y angle)
@@ -125,6 +128,14 @@
        next-dest? (b/set-moving bug (rand-int 360))
        :else bug))
       bug))
+
+
+(defn move
+  [screen entity]
+  (cond
+   (:player? entity) (update-player-movement entity)
+   (:enemy? entity) (update-enemy-movement screen entity)
+   :else entity))
 
 
 (defn attack

@@ -37,6 +37,10 @@
 
 
 
+
+
+
+
 (defn prevent-move
   [screen entity]
   (if (or
@@ -93,7 +97,6 @@
   :on-render
   (fn [screen entities]
     (clear!)
-    (render! screen [(find-first :home? entities)])
     (let [player (->> (find-first :player? entities)
                       (e/update-player-movement)
                       (e/kill-player entities))
